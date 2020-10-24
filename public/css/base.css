@@ -1,0 +1,46 @@
+#fancytable, #fancytable2 {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px; 
+  }
+  
+  #fancytable td, #fancytable th, #fancytable2 td, #fancytable2 th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  #fancytable tr:nth-child(even), #fancytable2 tr:nth-child(even) {background-color: #f2f2f2;}
+  
+  #fancytable tr:hover, #fancytable2 tr:hover {background-color: #ddd;}
+  
+  #fancytable th, #fancytable2 th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #3f4747;
+    color: white;
+  }
+
+  #myInput {
+    /*background-image: url('/css/searchicon.png'); Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 25%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 12px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+  }
+
+  #timeslot, #timeslot2 {
+	  text-align: center;
+	  font-size: xx-large; 
+	  font-weight: bold;
+  }
+
+  #titleheader {
+	  text-align: center;
+  }
