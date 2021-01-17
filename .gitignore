@@ -1,2 +1,5 @@
+security/*
+!security/.gitkeep
 node_modules
+*.log
 package-lock.json

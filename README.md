@@ -5,9 +5,13 @@ Parses NMEA data from GPS Receiver and displays it on a dashboard.
 ## todo 
 
 - [ ] Makefile w/ pre-reqs
-- [ ] Static ip to local
-- [ ] Certs
-- [ ] WS -> WSS
+- [X] Static ip to local
+- [X] Certs
+- [X] WS -> WSS
+- [ ] cmdline args for listenip & listenport
+- [ ] Disable stdout logging and write to file instead
+- [ ] Cleanup 
+
 
 ## Screenshot 
 

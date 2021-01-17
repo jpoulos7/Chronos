@@ -6,30 +6,88 @@ const SerialPort = require('serialport');
 const parsers = SerialPort.parsers;
 var GPS = require('gps');
 const http = require('http');
+const https = require('https');
 const express = require('express');
 var expressWs = require('express-ws');
 var path = require('path');
+const os = require('os');
+const fs = require('fs');
+const websocket = require('ws');
 
 // Setup our webserver
 const app = express();
-var listenport = 80;
-var server = http.createServer(app);
-var expressWs = expressWs(app, server);
-var hostpath = "10.1.3.6";
+//var listenport = 80;
+//var server = http.createServer(app);
+//var expressWs = expressWs(app, server);
+var hostpath = os.hostname;
 // Setup the path for our WS server. 
-var clientpath = 'ws://' + hostpath + '/client';
+//var clientpath = 'wss://' + hostpath + '/client';
+var clientpath = '';
 //console.log('setting up insecure serving http://' + hostpath + '/, and ' + clientpath);
 
 // Import JSON file containing active satellite information.
 var SatData = require('../public/js/SatData.json');
 
+// attempt to load certs
+var credentials = null;
+if (fs.existsSync('security/server.key') && fs.existsSync('security/server.crt')) {
+    credentials = {
+        //ca: ''
+        key: fs.readFileSync('security/server.key', 'utf8'),
+        cert: fs.readFileSync('security/server.crt', 'utf8')
+    }
+}
+//console.log('creds' + credentials.key + ' ' + credentials.cert);
+var http_protocol = ''
+var webserver = null
+var listenport = 0
+if (credentials) {
+    http_protocol = 'https'
+    if (!listenport) listenport = 443
+    console.log(`starting secure server on port ${listenport}`)
+    try { 
+	webserver = https.createServer(credentials, app);
+    	var plainhttp = express();
+    	plainhttp.get('*', function(req, res) {
+		res.redirect('https://' + hostpath);
+	})
+	plainhttp.listen(80);
+	clientpath = 'wss://' + hostpath + '/client';
+    }
+    catch (e) { console.log(e); }
+}
+
+if (!webserver) {
+   http_protocol = 'http'
+   if (!listenport || listenport == 443) listenport = 80
+   console.log(`starting basic server on port ${listenport}`)
+   try { 
+	webserver = http.createServer(app);
+	clientpath = 'ws://' + hostpath + '/client';
+   }
+   catch (e) { }
+}
+
+if (!webserver) {
+    console.log('fatal: unable to start the web server')
+    process.exit(1)
+}
+
+// attach the websocket server to the webserver
+expressWs = expressWs(app, webserver)
+
+
 // Setup pug views
 app.set('view engine', 'pug');
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '/../public')));
+//app.use(express.static(path.join(__dirname, '/../public')));
+app.use(express.static('public'));
 app.set('views', __dirname + '/../views');
 
+webserver.listen(listenport);
+
 // Start the server
+/*
 try {
     server.listen(listenport, function () {
         console.log('server listening at ' + hostpath);
@@ -37,6 +95,7 @@ try {
 } catch (e) {
     console.log('error attempting to start server: ' + e);
 }
+*/
 
 /**
  *
